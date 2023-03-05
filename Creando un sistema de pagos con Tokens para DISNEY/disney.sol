@@ -3,14 +3,14 @@ pragma solidity >0.4.4 <0.7.0;
 pragma experimental ABIEncoderV2;
 import "./ERC20.sol";
 
-contract Disney{
+contract Revam{
     
     // --------------------------------- DECLARACIONES INICIALES ---------------------------------
     
     // Instancia del contato token
     ERC20Basic private token;
     
-    // Direccion de Disney (owner)
+    // Direccion de Revam (owner)
     address payable public owner;
     
     // Constructor 
@@ -19,7 +19,7 @@ contract Disney{
         owner = msg.sender;
     }
     
-    // Estructura de datos para almacenar a los clientes de Disney
+    // Estructura de datos para almacenar a los clientes de Revam
     struct cliente {
         uint tokens_comprados;
         string [] atracciones_disfrutadas;
@@ -37,7 +37,7 @@ contract Disney{
         return _numTokens*(1 ether);
     }
     
-    // Funcion para comprar Tokens en disney y disfrutar de las atracciones 
+    // Funcion para comprar Tokens en revam y disfrutar de las atracciones 
     function CompraTokens(uint _numTokens) public payable {
         // Establecer el precio de los Tokens
         uint coste = PrecioTokens(_numTokens);
@@ -56,7 +56,7 @@ contract Disney{
         Clientes[msg.sender].tokens_comprados += _numTokens;
     }
     
-    // Balance de tokens del contrato disney
+    // Balance de tokens del contrato revam
     function balanceOf() public view returns (uint) {
         return token.balanceOf(address(this));
     }
@@ -71,13 +71,13 @@ contract Disney{
         token.increaseTotalSuply(_numTokens);
     }
     
-    // Modificador para controlar las funciones ejecutables por disney 
+    // Modificador para controlar las funciones ejecutables por revam 
     modifier Unicamente(address _direccion) {
         require(_direccion == owner, "No tienes permisos para ejecutar esta funcion.");
         _;
     }
     
-    // --------------------------------- GESTION DE DISNEY ---------------------------------
+    // --------------------------------- GESTION DE REVAM ---------------------------------
     
     // Eventos 
     event disfruta_atraccion(string, uint, address);
@@ -113,19 +113,19 @@ contract Disney{
     // Array para almacenar el nombre de las atracciones 
     string [] Comidas;
     
-    // Mapping para relacionar una identidad (cliente) con su historial de atracciones en DISNEY
+    // Mapping para relacionar una identidad (cliente) con su historial de atracciones en REVAM
     mapping (address => string []) HistorialAtracciones;
     
-    // Mapping para relacionar una identidad (cliente) con su historial de comidas en DISNEY
+    // Mapping para relacionar una identidad (cliente) con su historial de comidas en REVAM
     mapping (address => string []) HistorialComidas;
     
     // Star Wars -> 2 Tokens
     // Toy Story -> 5 Tokens 
     // Piratas del Caribe -> 8 Tokens 
     
-    // Crear nuevas atracciones para DISNEY (SOLO es ejecutable por Disney)
+    // Crear nuevas atracciones para REVAM (SOLO es ejecutable por Revam)
     function NuevaAtraccion(string memory _nombreAtraccion, uint _precio) public Unicamente (msg.sender) {
-        // Creacion de una atraccion en Disney 
+        // Creacion de una atraccion en Revam 
         MappingAtracciones[_nombreAtraccion] = atraccion(_nombreAtraccion,_precio, true);
         // Almacenamiento en un array el nombre de la atraccion 
         Atracciones.push(_nombreAtraccion);
@@ -133,17 +133,17 @@ contract Disney{
         emit nueva_atraccion(_nombreAtraccion, _precio);
     }
     
-    // Crear nuevos menus para la comida en DISNEY (SOLO es ejecutable por Disney)
+    // Crear nuevos menus para la comida en REVAM (SOLO es ejecutable por Revam)
     function NuevaComida(string memory _nombreComida, uint _precio) public Unicamente (msg.sender) {
-        // Creacion de una comida en Disney
+        // Creacion de una comida en Revam
         MappingComida[_nombreComida] = comida(_nombreComida, _precio, true);
         // Almacenar en un array las comidas que puede realizar una persona
         Comidas.push(_nombreComida);
-        // Emision del evento para la nueva comida en Disney 
+        // Emision del evento para la nueva comida en Revam 
         emit nueva_comida(_nombreComida, _precio, true);
     }
     
-    // Dar de baja a las atracciones en Disney 
+    // Dar de baja a las atracciones en Revam 
     function BajaAtraccion (string memory _nombreAtraccion) public Unicamente(msg.sender){
         // El estado de la atraccion pasa a FALSE => No esta en uso 
         MappingAtracciones[_nombreAtraccion].estado_atraccion = false;
@@ -151,7 +151,7 @@ contract Disney{
         emit baja_atraccion(_nombreAtraccion);
      }
      
-    // Dar de baja una comida de Disney 
+    // Dar de baja una comida de Revam 
     function BajaComida (string memory _nombreComida) public Unicamente(msg.sender){
         // El estado de la comida pasa a FALSE => No se puede comer
         MappingComida[_nombreComida].estado_comida = false;
@@ -159,12 +159,12 @@ contract Disney{
         emit baja_comida(_nombreComida);
      }
     
-    // Visualizar las atracciones de Disney 
+    // Visualizar las atracciones de Revam 
     function AtraccionesDisponibles() public view returns (string [] memory){
         return Atracciones;
     }
     
-    // Visualizar las comidas de Disney 
+    // Visualizar las comidas de Revam 
     function ComidasDisponibles() public view returns (string [] memory){
         return Comidas;
     }
@@ -181,7 +181,7 @@ contract Disney{
                 "Necesitas mas Tokens para subirte a esta atraccion.");
         
         /* El cliente paga la atraccion en Tokens:
-        - Ha sido necesario crear una funcion en ERC20.sol con el nombre de: 'transferencia_disney'
+        - Ha sido necesario crear una funcion en ERC20.sol con el nombre de: 'transferencia_revam'
         debido a que en caso de usar el Transfer o TransferFrom las direcciones que se escogian 
         para realizar la transccion eran equivocadas. Ya que el msg.sender que recibia el metodo Transfer o
         TransferFrom era la direccion del contrato.
@@ -205,12 +205,12 @@ contract Disney{
                 "Necesitas mas Tokens para comer esta comida.");
         
         /* El cliente paga la atraccion en Tokens:
-        - Ha sido necesario crear una funcion en ERC20.sol con el nombre de: 'transferencia_disney'
+        - Ha sido necesario crear una funcion en ERC20.sol con el nombre de: 'transferencia_revam'
         debido a que en caso de usar el Transfer o TransferFrom las direcciones que se escogian 
         para realizar la transccion eran equivocadas. Ya que el msg.sender que recibia el metodo Transfer o
         TransferFrom era la direccion del contrato.
         */
-        token.transferencia_disney(msg.sender, address(this),tokens_comida);
+        token.transferencia_revam(msg.sender, address(this),tokens_comida);
         // Almacenamiento en el historial de comidas del cliente 
         HistorialComidas[msg.sender].push(_nombreComida);
         // Emision del evento para disfrutar de la comida 
@@ -227,7 +227,7 @@ contract Disney{
         return HistorialComidas[msg.sender];
     }
     
-    // Funcion para que un cliente de Disney pueda devolver Tokens 
+    // Funcion para que un cliente de Revam pueda devolver Tokens 
     function DevolverTokens (uint _numTokens) public payable {
         // El numero de tokens a devolver es positivo
         require (_numTokens > 0, "Necesitas devolver una cantidad positiva de tokens.");
